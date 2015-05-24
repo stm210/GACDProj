@@ -3,8 +3,6 @@
 #Code should be run from directory containing 'UCI HAR Dataset' folder
 
 #Part 1: Merge Trainging and Test data sets
-#Create R objects form text files
-
 curr_dir <- getwd()
 setwd(paste(curr_dir, "/UCI HAR Dataset", sep =""))
 
@@ -19,7 +17,7 @@ lab <- read.table("activity_labels.txt", sep="")
 
 setwd(paste(curr_dir, sep =""))
 
-#change col names for easier R code refs
+#change col names for easier ref
 names(yTest)[1] <- 'act_num'
 names(yTrain)[1] <- 'act_num'
 names(lab)[1] <- 'act_num'
@@ -29,7 +27,7 @@ names(feat)[2] <- 'feat_desc'
 names(subjTest)[1] <- 'subj_num'
 names(subjTrain)[1] <- 'subj_num'
 
-#Merge test to test and train to train, then merge thopse together
+#Merge test to test and train to train, then merge those together
 dataTest<- cbind(subjTest, yTest, xTest)
 dataTrain <- cbind(subjTrain, yTrain, xTrain)
 dataComb <- rbind(dataTest, dataTrain)
@@ -54,20 +52,18 @@ dataComb$act_num[which(dataComb$act_num == 6)] <- 'Laying'
 #will need to loop... 
 
 i <- 1  
-j <- 3
 
-while (j < 564) {
-  newColName <- feat[i,2]  ##col2 = feat_desc
-  names(dataComb)[j] <- paste(newColName)
-  i = i + 1
-  j = j + 1
-}
+while ( (i+2) < 564 ) {
+            newColName <- feat[i,2]  # col 2 = feat_desc
+            names(dataComb)[(i+2)] <- paste(newColName)
+            i = i + 1
+  }
 
 rm(i)
-rm(j)
+
 
 #Part 5: Independent Tidy Data Set
-#tried using ddply but don't understand enough
+# tried using ddply but don't understand well enough
 
 finData <- aggregate(dataComb[,3] ~ subj_num + act_num, data = dataComb, FUN = 'mean')
 
